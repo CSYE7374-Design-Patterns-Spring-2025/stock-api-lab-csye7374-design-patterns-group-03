@@ -1,18 +1,21 @@
 package edu.neu.csye7374.stocks;
 
+import java.util.List;
+
 import edu.neu.csye7374.Stock;
 
-public class BoseStock extends Stock {
-    public BoseStock() {
+public class BmoStock extends Stock {
+    public BmoStock() {
         super();
     }
 
-    public BoseStock(String name, double price, String description) {
+    public BmoStock(String name, double price, String description) {
         super(name, price, description);
     }
 
     @Override
     public void calculatePrice() {
+        List<Double> bids = getBid();
         if (bids.isEmpty()) return;
 
         double avgBid = bids.stream().mapToDouble(Double::doubleValue).average().orElse(this.price);
@@ -20,7 +23,7 @@ public class BoseStock extends Stock {
 
         setPrice(avgBid);
 
-        int metricChange = (int) Math.round(priceChange * 8);
+        int metricChange = (int) Math.round(priceChange * 2);
         setMetric(getMetric() + metricChange);
     }
 }

@@ -12,9 +12,8 @@ public class Stock implements Tradable {
 	private String description;
 	protected double price;
 
-	private int metric;
-	
-	private List<Double> bids;
+	protected int metric;
+	protected List<Double> bids;
 
 	public Stock() {
 		this.ID = "";
@@ -54,15 +53,7 @@ public class Stock implements Tradable {
 		this.bids.add(bid);	
 		calculatePrice();
 	}
-	
-	public void calculatePrice() {
-		double avgBid = getBid().stream().mapToDouble(Double::doubleValue).average().orElse(this.price);
-		double priceChange = avgBid - this.price;
-		if (priceChange > 0) setMetric(getMetric() + (int) (priceChange * 8));
-		else setMetric(getMetric() - (int) (Math.abs(priceChange) * 8));
-		setPrice(avgBid);
-	}
-	
+
 	public List<Double> getBid(){
 		return this.bids;
 	}
@@ -71,19 +62,19 @@ public class Stock implements Tradable {
 	public int getMetric() {
 		return this.metric;
 	}
-	
+
 	public String getMetricValue() {
-		if(this.getMetric() < -3) {
-            return " Metric value is too low";
-        } else if (this.getMetric() >= -3 && this.getMetric() <= -1) {
-            return "Metric value is good";
-        } else {
-        	return "Metric value is excellent";
-        }
+		if (this.getMetric() < 0) {
+			return "Low performance";
+		} else if (this.getMetric() >= 0 && this.getMetric() <= 5) {
+			return "Good performance";
+		} else {
+			return "Very Good performance";
+		}
 	}
 
 	public void setMetric(int metric) {
-		this.metric = metric;
+		this.metric = Math.max(-10, Math.min(10, metric));
 	}
 
 	@Override
@@ -96,9 +87,16 @@ public class Stock implements Tradable {
 				'}';
 	}
 
-
-
 	public void setDescription(String desc) {
 		this.description = desc;
 	}
+
+	public void calculatePrice() {
+		double avgBid = getBid().stream().mapToDouble(Double::doubleValue).average().orElse(this.price);
+		double priceChange = avgBid - this.price;
+		if (priceChange > 0) setMetric(getMetric() + (int) (priceChange * 8));
+		else setMetric(getMetric() - (int) (Math.abs(priceChange) * 8));
+		setPrice(avgBid);
+	}
+
 }
