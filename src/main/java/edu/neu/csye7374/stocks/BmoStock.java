@@ -16,14 +16,20 @@ public class BmoStock extends Stock {
     @Override
     public void calculatePrice() {
         List<Double> bids = getBid();
-        if (bids.isEmpty()) return;
+        double weightSum = 0;
+        double weightedBidSum = 0;
+        for (int i = 0; i < bids.size(); i++) {
+            double weight = i + 1; // Weight increases with newer bids
+            weightedBidSum += bids.get(i) * weight;
+            weightSum += weight;
+        }
+        double weightedAvgBid = weightSum > 0 ? weightedBidSum / weightSum : this.price;
 
-        double avgBid = bids.stream().mapToDouble(Double::doubleValue).average().orElse(this.price);
-        double priceChange = avgBid - this.price;
+        // Calculate price change and update the metric accordingly
+        double priceChange = weightedAvgBid - this.price;
+        double metricAdjustment = Math.log1p(Math.abs(priceChange)) * (priceChange > 0 ? 1 : -1);
 
-        setPrice(avgBid);
-
-        int metricChange = (int) Math.round(priceChange * 2);
-        setMetric(getMetric() + metricChange);
+        setMetric(getMetric() + (int) (metricAdjustment * 5)); // Adjust metric with a scaling factor
+        setPrice(weightedAvgBid);
     }
 }
