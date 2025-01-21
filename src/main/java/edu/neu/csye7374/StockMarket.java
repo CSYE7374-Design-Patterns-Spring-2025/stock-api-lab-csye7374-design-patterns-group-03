@@ -6,13 +6,11 @@ import edu.neu.csye7374.interfaces.Tradable;
 import edu.neu.csye7374.stocks.*;
 
 public class StockMarket {
-	
 	private static volatile StockMarket instance;
 	private final Map<String, Tradable> stocks;
 	private StockMarket() {
 		stocks = new HashMap<>();
 	}
-
     public static StockMarket getInstance() {
         if (instance == null) {
             synchronized (StockMarket.class) {
@@ -57,6 +55,7 @@ public class StockMarket {
 	public void demo() {
 
 		System.out.println("[Trading Started]\n");
+
 		addStock(new BoseStock("Bose", 25.3, "Bose Corporation"));
 		addStock(new CvsStock("CVS Health", 22.16, "CVS Health Corporation"));
 		addStock(new MetaStock("Meta", 15, "Meta Platforms Inc"));
@@ -125,7 +124,6 @@ public class StockMarket {
 		));
 		System.out.println("Status after bid 6:");
 		showAllStocks();
-
 
 		removeStock("Bose");
 		System.out.println("Status of the Stocks after removing a stock");

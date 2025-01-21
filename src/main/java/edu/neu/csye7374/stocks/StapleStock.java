@@ -13,12 +13,13 @@ public class StapleStock extends Stock {
 
     @Override
     public void calculatePrice() {
-        double avgBid = getBid().stream().mapToDouble(Double::doubleValue).average().orElse(this.price);
+        if (bids.isEmpty()) return;
+        double avgBid = bids.stream().mapToDouble(Double::doubleValue).average().orElse(this.price);
         double priceChange = avgBid - this.price;
         if (priceChange > 0)
-            setMetric(getMetric() + (int) (priceChange * 0.4));
+            setMetric(getMetric() + (int) (priceChange * 4));
         else
-            setMetric(getMetric() - (int) (Math.abs(priceChange) * 0.4));
+            setMetric(getMetric() - (int) (Math.abs(priceChange) * 4));
         setPrice(avgBid);
     }
 }
